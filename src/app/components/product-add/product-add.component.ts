@@ -33,11 +33,13 @@ export class ProductAddComponent implements OnInit {
     if(this.productAddForm.valid){
       let productModel = Object.assign({}, this.productAddForm.value) 
       this.productService.add(productModel).subscribe(response=>{
-        console.log(response)
         this.toastrService.success(response.message, "Success")
       },responseError=>{
-        console.log(responseError)
-        this.toastrService.error(responseError.error)
+        if(responseError.error.Errors.length>0){
+          for (let i = 0; i < responseError.error.Errors.length; i++) {
+            this.toastrService.error(responseError.error.Errors[i].ErrorMessage, "Validation Error")
+          }
+        }
       })
     } else {
       this.toastrService.error("Invalid Form Input", "Warning")
